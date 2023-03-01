@@ -1,3 +1,6 @@
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
 namespace MyBackEnd
 {
     public class Program
@@ -12,6 +15,10 @@ namespace MyBackEnd
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddOpenTelemetry()
+                .ConfigureResource(builder => builder
+                    .AddService(serviceName: "MyBackend"))
+                .WithTracing(builder => builder.AddAspNetCoreInstrumentation());
 
             var app = builder.Build();
 
@@ -23,7 +30,6 @@ namespace MyBackEnd
             }
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

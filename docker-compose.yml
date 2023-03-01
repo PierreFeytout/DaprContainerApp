@@ -77,6 +77,8 @@ services:
     image: openzipkin/zipkin-slim
     ports:
       - "19411:9411"  # allows us to access the web console
+    networks:
+      - dapr
 
   dapr-placement:
     container_name: dapr-placement
@@ -84,6 +86,8 @@ services:
     command: ["./placement", "--port", "50006"]
     ports:
       - "50006:50006"
+    networks:
+      - dapr
 
   kafka:
     container_name: kafka
