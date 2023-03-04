@@ -3,9 +3,21 @@
     "Docker Compose": {
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "mybackend",
+      "composeLaunchUrl": "http://localhost:9000",
       "serviceActions": {
         "myfrontend": "StartDebugging",
-        "mybackend": "StartDebugging"
+        "mybackend": "StartDebugging",
+        "publishbackend": "StartDebugging",
+        "dapr-placement": "StartWithoutDebugging",
+        "dtc-maildev": "StartWithoutDebugging",
+        "dtc-zipkin": "StartWithoutDebugging",
+        "kafdrop": "StartWithoutDebugging",
+        "kafka": "StartWithoutDebugging",
+        "mybackend-dapr": "StartWithoutDebugging",
+        "myfrontend-dapr": "StartWithoutDebugging",
+        "PublishBackend-dapr": "StartWithoutDebugging"
       }
     }
   }

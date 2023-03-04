@@ -15,9 +15,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dapr", "dapr", "{606734B9-C
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "components", "components", "{48E63C70-F939-4D4E-B666-099FAD94E166}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublishBackend", "PublishBackend\PublishBackend.csproj", "{9ACB96D5-7E1A-42FB-82C2-C5640E3B894E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bindings", "bindings", "{D25E4AE8-EC25-454B-B355-50DE62D8131B}"
 	ProjectSection(SolutionItems) = preProject
-		dapr\components\pubsub.yaml = dapr\components\pubsub.yaml
-		dapr\components\statestore.yaml = dapr\components\statestore.yaml
+		dapr\components\bindings\bindings.yaml = dapr\components\bindings\bindings.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pubsub", "pubsub", "{896A9624-592A-4B9E-9445-A21AEA2E8A48}"
+	ProjectSection(SolutionItems) = preProject
+		dapr\components\pubsub\pubsub.yaml = dapr\components\pubsub\pubsub.yaml
 	EndProjectSection
 EndProject
 Global
@@ -38,12 +46,18 @@ Global
 		{B289DB74-9D91-42C2-9643-54921916E5CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B289DB74-9D91-42C2-9643-54921916E5CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B289DB74-9D91-42C2-9643-54921916E5CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ACB96D5-7E1A-42FB-82C2-C5640E3B894E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ACB96D5-7E1A-42FB-82C2-C5640E3B894E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ACB96D5-7E1A-42FB-82C2-C5640E3B894E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ACB96D5-7E1A-42FB-82C2-C5640E3B894E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{48E63C70-F939-4D4E-B666-099FAD94E166} = {606734B9-C812-45B7-91D7-2CC1A147A001}
+		{D25E4AE8-EC25-454B-B355-50DE62D8131B} = {48E63C70-F939-4D4E-B666-099FAD94E166}
+		{896A9624-592A-4B9E-9445-A21AEA2E8A48} = {48E63C70-F939-4D4E-B666-099FAD94E166}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8247947F-2C94-4578-96ED-15914110B13E}

@@ -1,0 +1,20 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: messages
+spec:
+  type: bindings.kafka
+  version: v1
+  metadata:
+  # Kafka broker connection setting
+  - name: brokers
+    value: kafka:29092
+  # consumer configuration: topic and consumer group
+  - name: topics
+    value: messages
+  - name: consumerGroup
+    value: $Default
+  - name: authType
+    value: none 
+  - name: authRequired
+    value: false

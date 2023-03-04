@@ -1,8 +1,7 @@
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
-
-namespace MyBackEnd
+namespace PublishBackend
 {
+    using Dapr.Client;
+
     public class Program
     {
         public static void Main(string[] args)
@@ -10,14 +9,11 @@ namespace MyBackEnd
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllers().AddDapr();
+            builder.Services.AddAuthorization();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddOpenTelemetry()
-                .ConfigureResource(builder => builder
-                    .AddService(serviceName: "MyBackend"))
-                .WithTracing(builder => builder.AddAspNetCoreInstrumentation());
 
             var app = builder.Build();
 
@@ -26,14 +22,22 @@ namespace MyBackEnd
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-                app.UseCloudEvents();
-                app.MapControllers();
-                app.MapSubscribeHandler();
             }
+
+            //app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
-            app.MapControllers();
+            var routeBuilder = app.MapPost("/messages", async (string data) =>
+            {
+                var daprBuilder = new DaprClientBuilder();
+                var daprClient = daprBuilder.Build();
+                await daprClient.PublishEventAsync("messages-pub-sub", "messages", data);
+
+                return Results.Ok();
+            })
+            .WithName("PublishMessages")
+            .WithOpenApi();
 
             app.Run();
         }
