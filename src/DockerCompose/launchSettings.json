@@ -17,7 +17,7 @@
         "kafka": "StartWithoutDebugging",
         "mybackend-dapr": "StartWithoutDebugging",
         "myfrontend-dapr": "StartWithoutDebugging",
-        "PublishBackend-dapr": "StartWithoutDebugging"
+        "publishbackend-dapr": "StartWithoutDebugging"
       }
     }
   }

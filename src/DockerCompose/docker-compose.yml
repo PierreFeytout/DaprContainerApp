@@ -3,6 +3,102 @@ volumes:
   kafka-volume:
 
 services:
+# Built .Net apps
+  myfrontend:
+    image: ${DOCKER_REGISTRY-}myfrontend
+    build:
+      context: ..
+      dockerfile: MyFrontEnd/Dockerfile
+    ports:
+      - "51000:50001"
+    depends_on:
+    - mybackend
+
+  mybackend:
+    image: ${DOCKER_REGISTRY-}mybackend
+    build:
+      context: ..
+      dockerfile: MyBackEnd/Dockerfile
+    ports:
+      - "52000:50001"
+    depends_on:
+    - dapr-placement
+    - kafka
+
+  publishbackend:
+    image: ${DOCKER_REGISTRY-}publishbackend
+    build:
+        context: ..
+        dockerfile: PublishBackend/Dockerfile
+    depends_on:
+    - dapr-placement
+    - kafka
+
+  # Dapr SideCars
+  myfrontend-dapr:
+    container_name: myfrontend-sidecar
+    image: "daprio/daprd:latest"
+    command: [
+      "./daprd",
+      "--app-id", "MyFrontEnd",
+      "--app-port", "80",
+      "--placement-host-address", "dapr-placement:50006", # Dapr's placement service can be reached via the docker DNS entry
+      "--components-path", "/dapr/components",
+      "--config", "/dapr/config.yaml"
+    ]
+    depends_on:
+      - myfrontend
+    network_mode: "service:myfrontend"
+    volumes:
+      - type: bind
+        source: ./dapr/config.yaml
+        target: /dapr/config.yaml
+
+  mybackend-dapr:
+    container_name: mybackend-sidecar
+    image: "daprio/daprd:latest"
+    command: [
+      "./daprd",
+      "--app-id", "MyBackEnd",
+      "--app-port", "80",
+      "--placement-host-address", "dapr-placement:50006", # Dapr's placement service can be reached via the docker DNS entry
+      "--components-path", "/dapr/components",
+      "--config", "/dapr/config.yaml"
+    ]
+    depends_on:
+      - mybackend
+    network_mode: "service:mybackend"
+    volumes:
+      - type: bind
+        source: ./dapr/config.yaml
+        target: /dapr/config.yaml
+      - type: bind
+        source: ./dapr/components/bindings/bindings.yaml
+        target: /dapr/components/bindings.yaml
+
+  publishbackend-dapr:
+    container_name: publishbackend-sidecar
+    image: "daprio/daprd:latest"
+    command: [
+      "./daprd",
+      "--app-id", "PublishBackend",
+      "--app-port", "80",
+      "--placement-host-address", "dapr-placement:50006", # Dapr's placement service can be reached via the docker DNS entry
+      "--components-path", "/dapr/components",
+      "--config", "/dapr/config.yaml"
+    ]
+    depends_on:
+      - publishbackend
+    network_mode: "service:publishbackend"
+    volumes:
+      - type: bind
+        source: ./dapr/config.yaml
+        target: /dapr/config.yaml
+      - type: bind
+        source: ./dapr/components/pubsub/pubsub.yaml
+        target: /dapr/components/pubsub.yaml
+
+# Kafka
   kafka:
      image: 'obsidiandynamics/kafka:latest'
      ports:
@@ -31,99 +127,7 @@ services:
    - JVM_OPTS=-Xms32M -Xmx64M
    - SERVER_SERVLET_CONTEXTPATH=/
 
-  myfrontend:
-    image: ${DOCKER_REGISTRY-}myfrontend
-    build:
-      context: .
-      dockerfile: MyFrontEnd/Dockerfile
-    ports:
-      - "51000:50001"
-    depends_on:
-    - mybackend
-
-  myfrontend-dapr:
-    container_name: myfrontend-sidecar
-    image: "daprio/daprd:latest"
-    command: [
-      "./daprd",
-      "--app-id", "MyFrontEnd",
-      "--app-port", "80",
-      "--placement-host-address", "dapr-placement:50006", # Dapr's placement service can be reached via the docker DNS entry
-      "--components-path", "/dapr/components",
-      "--config", "/dapr/config.yaml"
-    ]
-    depends_on:
-      - myfrontend
-    network_mode: "service:myfrontend"
-    volumes:
-      - type: bind
-        source: ./dapr/config.yaml
-        target: /dapr/config.yaml
-
-  mybackend:
-    image: ${DOCKER_REGISTRY-}mybackend
-    build:
-      context: .
-      dockerfile: MyBackEnd/Dockerfile
-    ports:
-      - "52000:50001"
-    depends_on:
-    - dapr-placement
-    - kafka
-
-  mybackend-dapr:
-    container_name: mybackend-sidecar
-    image: "daprio/daprd:latest"
-    command: [
-      "./daprd",
-      "--app-id", "MyBackEnd",
-      "--app-port", "80",
-      "--placement-host-address", "dapr-placement:50006", # Dapr's placement service can be reached via the docker DNS entry
-      "--components-path", "/dapr/components",
-      "--config", "/dapr/config.yaml"
-    ]
-    depends_on:
-      - mybackend
-    network_mode: "service:mybackend"
-    volumes:
-      - type: bind
-        source: ./dapr/config.yaml
-        target: /dapr/config.yaml
-      - type: bind
-        source: ./dapr/components/bindings/bindings.yaml
-        target: /dapr/components/bindings.yaml
-
-  publishbackend:
-    image: ${DOCKER_REGISTRY-}publishbackend
-    build:
-        context: .
-        dockerfile: PublishBackend/Dockerfile
-    depends_on:
-    - dapr-placement
-    - kafka
-
-  PublishBackend-dapr:
-    container_name: publishbackend-sidecar
-    image: "daprio/daprd:latest"
-    command: [
-      "./daprd",
-      "--app-id", "PublishBackend",
-      "--app-port", "80",
-      "--placement-host-address", "dapr-placement:50006", # Dapr's placement service can be reached via the docker DNS entry
-      "--components-path", "/dapr/components",
-      "--config", "/dapr/config.yaml"
-    ]
-    depends_on:
-      - publishbackend
-    network_mode: "service:publishbackend"
-    volumes:
-      - type: bind
-        source: ./dapr/config.yaml
-        target: /dapr/config.yaml
-      - type: bind
-        source: ./dapr/components/pubsub/pubsub.yaml
-        target: /dapr/components/pubsub.yaml
-
+# Smtp Server
   dtc-maildev:
     container_name: dtc-maildev
     image: maildev/maildev:latest
@@ -133,12 +137,14 @@ services:
     ports:
       - "4000:80"   # allows us to access the web console
 
+# Zipkin
   dtc-zipkin:
     container_name: dtc-zipkin
     image: openzipkin/zipkin-slim
     ports:
       - "19411:9411"  # allows us to access the web console
 
+# Dapr placement
   dapr-placement:
     container_name: dapr-placement
     image: "daprio/dapr"
