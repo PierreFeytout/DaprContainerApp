@@ -13,6 +13,9 @@
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
     <None Include="docker-compose.yml" />
+    <None Include="./dapr/config.yaml" />
+    <None Include="./dapr/components/pubsub/pubsub.yaml" />
+    <None Include="./dapr/components/bindings/bindings.yaml" />
     <None Include=".dockerignore" />
   </ItemGroup>
 </Project>
