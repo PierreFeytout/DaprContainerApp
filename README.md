@@ -31,3 +31,7 @@ Not Tested
 - Open the soution DaprContainerApp.sln
 - Set docker-compose as startup project
 - Launch the project, ⚠️it might take some time on the first run due to the pulling of docker images
+- Kafdrop can be found at http://localhost:9000 **when kafdrop is up we need toc reate a new topic called messages**
+- Zipkin can be found at http://localhost:19411
+- The publish minimal api used to publish messages to kafka can be found at http://localhost:60005/swagger
+  - To check it it's working the messages sent can be viewed in the kafdrop topic page and zipkin should show the traces
