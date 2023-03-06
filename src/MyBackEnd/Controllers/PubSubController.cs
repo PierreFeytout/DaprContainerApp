@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
+﻿using Dapr;
+using DparContainer.Models;
 using Microsoft.AspNetCore.Mvc;
-using Dapr.Client;
-using Dapr;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace MyBackEnd.Controllers
 {
@@ -13,9 +13,9 @@ namespace MyBackEnd.Controllers
     {
         [Topic("messages-pub-sub", "messages")]
         [HttpPost("/messages")]
-        public IActionResult Messages([FromServices] DaprClient  daprClient)
+        public IActionResult Messages(CloudEvent<EventModel> cloudEvent)
         {
-            return Ok();
+            return Ok(cloudEvent.Data);
         }
     }
 }
