@@ -10,6 +10,8 @@ services:
       context: ..
       dockerfile: MyFrontEnd/Dockerfile
     ports:
+      - "60001:80"
+      - "60002:443"
       - "51000:50001"
     depends_on:
     - mybackend
@@ -20,19 +22,19 @@ services:
       context: ..
       dockerfile: MyBackEnd/Dockerfile
     ports:
+      - "60003:80"
+      - "60004:443"
       - "52000:50001"
-    depends_on:
-    - dapr-placement
-    - kafka
 
   publishbackend:
     image: ${DOCKER_REGISTRY-}publishbackend
     build:
         context: ..
         dockerfile: PublishBackend/Dockerfile
-    depends_on:
-    - dapr-placement
-    - kafka
+    ports:
+      - "60005:80"
+      - "60006:443"
+      - "53000:50001"
 
   # Dapr SideCars
   myfrontend-dapr:
@@ -47,7 +49,8 @@ services:
       "--config", "/dapr/config.yaml"
     ]
     depends_on:
-      - myfrontend
+    - dapr-placement
+    - kafka
     network_mode: "service:myfrontend"
     volumes:
       - type: bind
@@ -66,7 +69,15 @@ services:
       "--config", "/dapr/config.yaml"
     ]
     depends_on:
-      - mybackend
+    - dapr-placement
+    - mybackend
+    - kafka
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
     network_mode: "service:mybackend"
     volumes:
       - type: bind
@@ -88,7 +99,15 @@ services:
       "--config", "/dapr/config.yaml"
     ]
     depends_on:
-      - publishbackend
+    - dapr-placement
+    - publishbackend
+    - kafka
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
     network_mode: "service:publishbackend"
     volumes:
       - type: bind
@@ -100,6 +119,7 @@ services:
 
 # Kafka
   kafka:
+     container_name: kafka
      image: 'obsidiandynamics/kafka:latest'
      ports:
           - "2181:2181"
@@ -117,6 +137,7 @@ services:
      - kafka-volume:/var
   
   kafdrop:
+   container_name: kafdrop
    image: 'obsidiandynamics/kafdrop:latest'
    depends_on:
        - kafka

@@ -22,6 +22,8 @@ namespace MyFrontEnd
 
             app.UseAuthorization();
 
+            //app.UseHttpsRedirection();
+
             app.MapRazorPages();
 
             app.Run();

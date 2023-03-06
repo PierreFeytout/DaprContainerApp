@@ -1,3 +1,4 @@
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
@@ -16,8 +17,19 @@ namespace MyBackEnd
             builder.Services.AddSwaggerGen();
             builder.Services.AddOpenTelemetry()
                 .ConfigureResource(builder => builder
-                    .AddService(serviceName: "MyBackend"))
-                .WithTracing(builder => builder.AddAspNetCoreInstrumentation());
+                 .AddService(serviceName: "mybackend"))
+                .WithTracing(builder =>
+                {
+                    builder.AddAspNetCoreInstrumentation();
+                    builder.AddZipkinExporter(config =>
+                    {
+                        config.Endpoint = new Uri("http://host.docker.internal:19411/api/v2/spans");
+                    });
+                })
+                .WithMetrics(builder =>
+                {
+                    builder.AddAspNetCoreInstrumentation();
+                });
 
             var app = builder.Build();
 
@@ -32,6 +44,8 @@ namespace MyBackEnd
             }
 
             app.UseAuthorization();
+
+            //app.UseHttpsRedirection();
 
             app.MapControllers();
 

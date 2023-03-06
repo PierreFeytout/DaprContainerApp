@@ -4,7 +4,7 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "composeLaunchAction": "LaunchBrowser",
-      "composeLaunchServiceName": "mybackend",
+      "composeLaunchServiceName": "kafdrop",
       "composeLaunchUrl": "http://localhost:9000",
       "serviceActions": {
         "myfrontend": "StartDebugging",

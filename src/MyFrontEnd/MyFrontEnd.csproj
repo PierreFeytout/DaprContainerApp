@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -6,11 +6,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>../DockerCompose/DockerCompose.dcproj</DockerComposeProjectPath>
+    <UserSecretsId>af8c8238-fc27-4f1d-9915-04bf005d09f8</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Dapr.AspNetCore" Version="1.10.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DparContainer.Models\DparContainer.Models.csproj" />
   </ItemGroup>
 
 </Project>
